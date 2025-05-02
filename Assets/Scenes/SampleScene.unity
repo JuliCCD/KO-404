@@ -44169,12 +44169,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidad: 5
-  animator: {fileID: 1290964819}
   fuerzaSalto: 8
   longitudRaycast: 1
+  dashVelocidad: 10
+  dashDuracion: 0.2
   CapaSuelo:
     serializedVersion: 2
     m_Bits: 8
+  animator: {fileID: 1290964819}
 --- !u!50 &1290964823
 Rigidbody2D:
   serializedVersion: 5
