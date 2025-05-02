@@ -1,65 +1,61 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    Rigidbody2D rb;
-    SpriteRenderer sr;
-    Animator animator;
+    // Velocidad del jugador
+    public float velocidad = 6f;
 
-    public float velocidad = 1f;
-    public float fuerzaSalto = 1f;
-    bool enSuelo = true; // Necesitarías detectar si está en el suelo
+    public Animator animator;
+
+    public float fuerzaSalto = 10f;
+    public float longitudRaycast = 0.1f; // Fixed typo in variable name
+    public LayerMask CapaSuelo;
+
+    private bool enSuelo;
+    private Rigidbody2D rb; // Fixed typo in class name
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        MoverseHorizontal();
-        Saltar();
+        // Obtener la entrada horizontal 
+        float velocidadX = Input.GetAxis("Horizontal") * velocidad * Time.deltaTime;
+
+        animator.SetFloat("movement", Mathf.Abs(velocidadX * velocidad)); // Use Mathf.Abs for positive movement values
+
+        if (velocidadX < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        if (velocidadX > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+
+        // Obtener la posición actual del jugador
+        Vector3 posicion = transform.position;
+
+        // Actualizar la posición del jugador
+        transform.position = new Vector3(posicion.x + velocidadX, posicion.y, posicion.z);
+
+        // Fixed RaycastHit2D and Physics2D.Raycast usage
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, longitudRaycast, CapaSuelo);
+        enSuelo = hit.collider != null;
+
+        if (enSuelo && Input.GetKeyDown(KeyCode.Space)) // Fixed KeyCode from Escape to Space for jumping
+        {
+            rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
+        }
+
+        animator.SetBool("ensuelo", enSuelo); 
     }
 
-    void MoverseHorizontal()
+    private void OnDrawGizmos()
     {
-        float movimiento = 0f;
-        animator.SetInteger("Estado", 0); // Idle por defecto
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            movimiento = velocidad;
-            sr.flipX = false;
-            animator.SetInteger("Estado", 1); // Caminando
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            movimiento = -velocidad;
-            sr.flipX = true;
-            animator.SetInteger("Estado", 1); // Caminando
-        }
-
-        rb.linearVelocity = new Vector2(movimiento, rb.linearVelocity.y);
-    }
-
-    void Saltar()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && enSuelo)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, fuerzaSalto);
-            enSuelo = false; // Necesitas lógica para restablecerlo al tocar el suelo
-            animator.SetInteger("Estado", 2);
-        }
-    }
-
-    // Puedes usar OnCollisionEnter2D para detectar cuando toca el suelo
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Suelo"))
-        {
-            enSuelo = true;
-        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * longitudRaycast);
     }
 }
