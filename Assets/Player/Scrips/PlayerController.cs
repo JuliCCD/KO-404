@@ -2,36 +2,49 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Velocidad del jugador
-    public float velocidad = 5f;
+    public float velocidad = 5f; // Velocidad de movimiento horizontal
+    public float fuerzaSalto = 0.5f; // Fuerza del salto
+    public float longitudRaycast = 0.1f; // Longitud del raycast para detectar el suelo
+    public float dashVelocidad = 10f; // Velocidad del dash
+    public float dashDuracion = 0.2f; // Duración del dash
+    public LayerMask CapaSuelo; // Capa que define qué es considerado suelo
 
-    public Animator animator;
-
-    public float fuerzaSalto = 0.5f;
-    public float longitudRaycast = 0.1f; // Fixed typo in variable name
-    public LayerMask CapaSuelo;
-
-    private bool enSuelo;
-    private Rigidbody2D rb; // Fixed typo in class name
+    private bool enSuelo; // Indica si el jugador está en el suelo
+    private bool isDashing = false; // Indica si el jugador está haciendo dash
+    private bool dashUsado = false; // Indica si el dash ya fue usado en el aire
+    private float dashTiempoRestante = 0f; // Tiempo restante del dash
+    private Rigidbody2D rb; // Referencia al Rigidbody2D del jugador
+    public Animator animator; // Referencia al Animator para manejar animaciones
 
     void Start()
     {
+        // Inicializar el Rigidbody2D
         rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        MoverJugador();
-        VerificarSuelo();
-        Saltar();
+        // Si no está haciendo dash, permitir otros movimientos
+        if (!isDashing)
+        {
+            MoverJugador();
+            VerificarSuelo();
+            Saltar();
+        }
+
+        // Manejar el dash
+        Dash();
+
+        // Actualizar las animaciones
         ActualizarAnimaciones();
     }
 
     private void MoverJugador()
     {
-        // Obtener la entrada horizontal 
+        // Manejar el movimiento horizontal del jugador
         float velocidadX = Input.GetAxis("Horizontal") * velocidad * Time.deltaTime;
 
+        // Cambiar la dirección del sprite según el movimiento
         if (velocidadX < 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
@@ -47,28 +60,80 @@ public class PlayerController : MonoBehaviour
 
     private void VerificarSuelo()
     {
-        // Fixed RaycastHit2D and Physics2D.Raycast usage
+        // Detectar si el jugador está tocando el suelo usando un raycast
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, longitudRaycast, CapaSuelo);
         enSuelo = hit.collider != null;
+
+        // Resetear el dash cuando el jugador toca el suelo
+        if (enSuelo)
+        {
+            dashUsado = false;
+        }
     }
 
     private void Saltar()
     {
-        if (enSuelo && Input.GetKeyDown(KeyCode.Space)) // Fixed KeyCode from Escape to Space for jumping
+        // Manejar el salto del jugador
+        if (enSuelo && Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
         }
     }
 
+    private void Dash()
+    {
+        // Manejar el dash del jugador
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing && (enSuelo || !dashUsado))
+        {
+            isDashing = true;
+
+            // Si está en el aire, marcar el dash como usado
+            if (!enSuelo)
+            {
+                dashUsado = true;
+            }
+
+            dashTiempoRestante = dashDuracion;
+
+            // Aplicar velocidad de dash en la dirección actual
+            float dashDirection = transform.localScale.x; // Dirección basada en la escala del jugador
+            rb.linearVelocity = new Vector2(dashDirection * dashVelocidad, rb.linearVelocity.y);
+        }
+
+        if (isDashing)
+        {
+            // Reducir el tiempo restante del dash
+            dashTiempoRestante -= Time.deltaTime;
+            if (dashTiempoRestante <= 0)
+            {
+                // Terminar el dash
+                isDashing = false;
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Detener el movimiento horizontal
+            }
+        }
+    }
+
     private void ActualizarAnimaciones()
     {
+        // Actualizar las animaciones del jugador
         float velocidadX = Input.GetAxis("Horizontal") * velocidad * Time.deltaTime;
-        animator.SetFloat("movement", Mathf.Abs(velocidadX * velocidad)); // Use Mathf.Abs for positive movement values
-        animator.SetBool("ensuelo", enSuelo);
+        animator.SetFloat("movement", Mathf.Abs(velocidadX * velocidad)); // Animación de movimiento
+        animator.SetBool("ensuelo", enSuelo); // Animación de estar en el suelo
+
+        // Animación de caída
+        if (!enSuelo && rb.linearVelocity.y < 0)
+        {
+            animator.SetBool("fall", true);
+        }
+        else
+        {
+            animator.SetBool("fall", false);
+        }
     }
 
     private void OnDrawGizmos()
     {
+        // Dibujar el raycast en la escena para depuración
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * longitudRaycast);
     }
