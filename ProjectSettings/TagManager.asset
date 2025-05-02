@@ -41,5 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: fondo1
+    uniqueID: 3696385215
+    locked: 0
+  - name: fondo2
+    uniqueID: 1054017087
+    locked: 0
+  - name: fondo3
+    uniqueID: 271702115
+    locked: 0
+  - name: fondo4
+    uniqueID: 146628205
+    locked: 0
   m_RenderingLayers:
   - Default
