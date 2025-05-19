@@ -135,6 +135,16 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("fall", false);
         }
+
+        // Animación de dash
+        if (isDashing && Mathf.Abs(velocidadX) < 0.01f) // Solo mostrar animación de dash si está quieto
+        {
+            animator.SetBool("dash", true);
+        }
+        else
+        {
+            animator.SetBool("dash", false); // Regresar a la animación anterior
+        }
     }
 
     private void OnDrawGizmos()
