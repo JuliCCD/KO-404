@@ -60,9 +60,15 @@ public class PlayerController : MonoBehaviour
 
     private void VerificarSuelo()
     {
-        // Detectar si el jugador está tocando el suelo usando un raycast
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, longitudRaycast, CapaSuelo);
-        enSuelo = hit.collider != null;
+        // Detectar si el jugador está tocando el suelo usando dos raycasts (uno a cada lado)
+        Vector2 raycastOriginIzquierda = (Vector2)transform.position + new Vector2(-0.1f, 0); // Desplazar el raycast hacia la izquierda
+        Vector2 raycastOriginDerecha = (Vector2)transform.position + new Vector2(0.1f, 0); // Desplazar el raycast hacia la derecha
+
+        RaycastHit2D hitIzquierda = Physics2D.Raycast(raycastOriginIzquierda, Vector2.down, longitudRaycast, CapaSuelo);
+        RaycastHit2D hitDerecha = Physics2D.Raycast(raycastOriginDerecha, Vector2.down, longitudRaycast, CapaSuelo);
+
+        // El jugador está en el suelo si cualquiera de los dos raycasts detecta una colisión
+        enSuelo = hitIzquierda.collider != null || hitDerecha.collider != null;
 
         // Resetear el dash cuando el jugador toca el suelo
         if (enSuelo)
@@ -133,8 +139,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Dibujar el raycast en la escena para depuración
+        // Dibujar los raycasts en la escena para depuración
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * longitudRaycast);
+
+        Vector2 raycastOriginIzquierda = (Vector2)transform.position + new Vector2(-0.1f, 0); // Desplazar el raycast hacia la izquierda
+        Vector2 raycastOriginDerecha = (Vector2)transform.position + new Vector2(0.1f, 0); // Desplazar el raycast hacia la derecha
+
+        Gizmos.DrawLine(raycastOriginIzquierda, raycastOriginIzquierda + Vector2.down * longitudRaycast);
+        Gizmos.DrawLine(raycastOriginDerecha, raycastOriginDerecha + Vector2.down * longitudRaycast);
     }
 }
