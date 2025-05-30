@@ -15,6 +15,12 @@ public class PlayerController : MonoBehaviour
     private float dashTiempoRestante = 0f; // Tiempo restante del dash
     private Rigidbody2D rb; // Referencia al Rigidbody2D del jugador
     public Animator animator; // Referencia al Animator para manejar animaciones
+    private bool isAttacking = false;
+    private float attackCooldown = 0.5f; // Tiempo de cooldown en segundos
+    private float lastAttackTime = -Mathf.Infinity; // Último tiempo de ataque
+    private float attackDuration = 0.6f; // Duración de la animación de ataque
+    private float attackTimer = 0f;
+    private bool attackKeyReleased = true;
 
     void Start()
     {
@@ -34,6 +40,29 @@ public class PlayerController : MonoBehaviour
 
         // Manejar el dash
         Dash();
+
+        // Detectar si la tecla C fue soltada
+        if (Input.GetKeyUp(KeyCode.C))
+        {
+            attackKeyReleased = true;
+        }
+
+        // Solo atacar si la tecla fue soltada antes
+        if (Input.GetKeyDown(KeyCode.C) && attackKeyReleased)
+        {
+            Atacar();
+            attackKeyReleased = false;
+        }
+
+        // Si está atacando, cuenta el tiempo y termina el ataque cuando pase la duración
+        if (isAttacking)
+        {
+            attackTimer += Time.deltaTime;
+            if (attackTimer >= attackDuration)
+            {
+                FinalizarAtaque();
+            }
+        }
 
         // Actualizar las animaciones
         ActualizarAnimaciones();
@@ -119,32 +148,41 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Atacar()
+    {
+        // Solo atacar si ha pasado el cooldown
+        if (!isAttacking && Time.time >= lastAttackTime + attackCooldown)
+        {
+            isAttacking = true;
+            attackTimer = 0f; // Reinicia el temporizador de ataque
+            lastAttackTime = Time.time;
+            // No uses Trigger, solo el bool
+            // animator.SetTrigger("attack"); // Elimina esta línea si usas solo bool
+            // El Animator cambiará a la animación de ataque cuando isAttacking sea true
+        }
+    }
+
+    // Este método lo llamas desde un evento al final de la animación de ataque en el Animator
+    public void FinalizarAtaque()
+    {
+        isAttacking = false;
+        attackTimer = 0f;
+    }
+
     private void ActualizarAnimaciones()
     {
-        // Actualizar las animaciones del jugador
         float velocidadX = Input.GetAxis("Horizontal") * velocidad * Time.deltaTime;
-        animator.SetFloat("movement", Mathf.Abs(velocidadX * velocidad)); // Animación de movimiento
-        animator.SetBool("ensuelo", enSuelo); // Animación de estar en el suelo
+        animator.SetFloat("movement", Mathf.Abs(velocidadX * velocidad));
+        animator.SetBool("ensuelo", enSuelo);
 
         // Animación de caída
-        if (!enSuelo && rb.linearVelocity.y < 0)
-        {
-            animator.SetBool("fall", true);
-        }
-        else
-        {
-            animator.SetBool("fall", false);
-        }
+        animator.SetBool("fall", !enSuelo && rb.linearVelocity.y < 0);
 
         // Animación de dash
-        if (isDashing && Mathf.Abs(velocidadX) < 0.01f) // Solo mostrar animación de dash si está quieto
-        {
-            animator.SetBool("dash", true);
-        }
-        else
-        {
-            animator.SetBool("dash", false); // Regresar a la animación anterior
-        }
+        animator.SetBool("dash", isDashing && Mathf.Abs(velocidadX) < 0.01f);
+
+        // Animación de ataque (opcional, si quieres un bool en vez de trigger)
+        animator.SetBool("isAttacking", isAttacking);
     }
 
     private void OnDrawGizmos()
