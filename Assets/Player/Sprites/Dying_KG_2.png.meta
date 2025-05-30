@@ -66,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 35
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -272,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Dying_KG_2_0: -934107167333641770
+      Dying_KG_2_1: -4724178020169688997
+      Dying_KG_2_2: 5860251806280768263
+      Dying_KG_2_3: -3895776246202452889
+      Dying_KG_2_4: 6506606307051743788
+      Dying_KG_2_5: 5838909148544467932
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
