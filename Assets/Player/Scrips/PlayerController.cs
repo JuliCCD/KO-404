@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     private float attackDuration = 0.6f; // Duración de la animación de ataque
     private float attackTimer = 0f;
     private bool attackKeyReleased = true;
+    private bool isStunned = false;
+    private float stunTimer = 0f;
 
     void Start()
     {
@@ -62,6 +64,17 @@ public class PlayerController : MonoBehaviour
             {
                 FinalizarAtaque();
             }
+        }
+
+        // Controlar el stun
+        if (isStunned)
+        {
+            stunTimer -= Time.deltaTime;
+            if (stunTimer <= 0)
+            {
+                isStunned = false;
+            }
+            return; // Si está stuneado, no puede moverse ni atacar
         }
 
         // Actualizar las animaciones
@@ -156,13 +169,10 @@ public class PlayerController : MonoBehaviour
             isAttacking = true;
             attackTimer = 0f; // Reinicia el temporizador de ataque
             lastAttackTime = Time.time;
-            // No uses Trigger, solo el bool
-            // animator.SetTrigger("attack"); // Elimina esta línea si usas solo bool
-            // El Animator cambiará a la animación de ataque cuando isAttacking sea true
+
         }
     }
-
-    // Este método lo llamas desde un evento al final de la animación de ataque en el Animator
+    
     public void FinalizarAtaque()
     {
         isAttacking = false;
@@ -195,5 +205,29 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.DrawLine(raycastOriginIzquierda, raycastOriginIzquierda + Vector2.down * longitudRaycast);
         Gizmos.DrawLine(raycastOriginDerecha, raycastOriginDerecha + Vector2.down * longitudRaycast);
+    }
+
+    public void RecibirDanio(int cantidad)
+    {
+        Debug.Log("El jugador recibió " + cantidad + " de daño.");
+        animator.SetBool("isHurt", true);
+        // Si usas evento en la animación, no necesitas Invoke aquí
+    }
+
+    private void ResetHurt()
+    {
+        animator.SetBool("isHurt", false);
+    }
+
+    public void Stunear(float duracion)
+    {
+        isStunned = true;
+        stunTimer = duracion;
+        // Aquí puedes activar animación de stun, etc.
+    }
+
+    public void DesactivaDano()
+    {
+        animator.SetBool("isHurt", false);
     }
 }

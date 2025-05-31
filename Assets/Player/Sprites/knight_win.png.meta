@@ -272,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      knight_win_0: 7576286728920086625
+      knight_win_1: -1851371155884056030
+      knight_win_2: 4007646093671574508
+      knight_win_3: -2966110729653821122
+      knight_win_4: 4075361560145292239
+      knight_win_5: -8974389327234020047
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Shield_Bash_KG_0: 4247225665773658444
+      Shield_Bash_KG_1: 6939746399126979244
+      Shield_Bash_KG_2: -7101921885732452270
+      Shield_Bash_KG_3: 3364366251853094351
+      Shield_Bash_KG_4: -3467890845351958251
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

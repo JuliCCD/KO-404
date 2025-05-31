@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Landing_KG_1_0: 7964125918726129489
+      Landing_KG_1_1: 5997886382921781068
+      Landing_KG_1_2: -903346498731968141
+      Landing_KG_1_3: 7962158446912790724
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

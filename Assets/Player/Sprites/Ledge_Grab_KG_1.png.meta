@@ -272,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Ledge_Grab_KG_1_0: -5016646193457028939
+      Ledge_Grab_KG_1_1: -9076187143141195638
+      Ledge_Grab_KG_1_2: -8120477445688260247
+      Ledge_Grab_KG_1_3: 7592996565058349295
+      Ledge_Grab_KG_1_4: -5364100740669906201
+      Ledge_Grab_KG_1_5: 8475235967730775955
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

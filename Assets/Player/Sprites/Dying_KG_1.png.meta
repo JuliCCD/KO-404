@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Dying_KG_1_0: -3699640921996313967
+      Dying_KG_1_1: 800936601756474647
+      Dying_KG_1_2: 329537760630217049
+      Dying_KG_1_3: -8502117516598202343
+      Dying_KG_1_4: 3185487368415945839
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

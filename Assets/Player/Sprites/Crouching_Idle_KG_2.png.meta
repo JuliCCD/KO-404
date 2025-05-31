@@ -197,7 +197,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Crouching_Idle_KG_2_0: 7598012173487904784
+      Crouching_Idle_KG_2_1: 6289783722427180413
+      Crouching_Idle_KG_2_2: 6623130853637860455
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

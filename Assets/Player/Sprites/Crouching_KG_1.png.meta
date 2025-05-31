@@ -197,7 +197,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Crouching_KG_1_0: 7602485417100853180
+      Crouching_KG_1_1: -226893032838694379
+      Crouching_KG_1_2: 3909490825234731971
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
