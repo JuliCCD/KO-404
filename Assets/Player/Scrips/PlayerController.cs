@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
     private float stunTimer = 0f;
 
     public int vida  = 3; // Vida del jugador
+    public bool muerto;
+
     void Start()
     {
         // Inicializar el Rigidbody2D
@@ -38,52 +40,57 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Si no está haciendo dash, permitir otros movimientos
-        if (!isDashing)
+        // Verificar si el jugador está muerto
+        if (!muerto)
         {
-            MoverJugador();
-            VerificarSuelo();
-            Saltar();
-        }
-
-        // Manejar el dash
-        Dash();
-
-        // Detectar si la tecla C fue soltada
-        if (Input.GetKeyUp(KeyCode.C))
-        {
-            attackKeyReleased = true;
-        }
-
-        // Solo atacar si la tecla fue soltada antes
-        if (Input.GetKeyDown(KeyCode.C) && attackKeyReleased)
-        {
-            Atacar();
-            attackKeyReleased = false;
-        }
-
-        // Si está atacando, cuenta el tiempo y termina el ataque cuando pase la duración
-        if (isAttacking)
-        {
-            attackTimer += Time.deltaTime;
-            if (attackTimer >= attackDuration)
+            // Si no está haciendo dash, permitir otros movimientos
+            if (!isDashing)
             {
-                FinalizarAtaque();
+                MoverJugador();
+                VerificarSuelo();
+                Saltar();
             }
-        }
 
-        // Controlar el stun
-        if (isStunned)
-        {
-            stunTimer -= Time.deltaTime;
-            if (stunTimer <= 0)
+            // Manejar el dash
+            Dash();
+
+            // Detectar si la tecla C fue soltada
+            if (Input.GetKeyUp(KeyCode.C))
             {
-                isStunned = false;
+                attackKeyReleased = true;
             }
-            return; // Si está stuneado, no puede moverse ni atacar
+
+            // Solo atacar si la tecla fue soltada antes
+            if (Input.GetKeyDown(KeyCode.C) && attackKeyReleased)
+            {
+                Atacar();
+                attackKeyReleased = false;
+            }
+
+            // Si está atacando, cuenta el tiempo y termina el ataque cuando pase la duración
+            if (isAttacking)
+            {
+                attackTimer += Time.deltaTime;
+                if (attackTimer >= attackDuration)
+                {
+                    FinalizarAtaque();
+                }
+            }
+
+            // Controlar el stun
+            if (isStunned)
+            {
+                stunTimer -= Time.deltaTime;
+                if (stunTimer <= 0)
+                {
+                    isStunned = false;
+                }
+                return; // Si está stuneado, no puede moverse ni atacar
+            }
+
+            ActualizarAnimaciones();
         }
 
-        ActualizarAnimaciones();
         
     }
 
@@ -216,9 +223,24 @@ public class PlayerController : MonoBehaviour
 
     public void RecibirDanio(Vector2 direccion, int cantDanio)
     {
-        recibiendoDanio = true;
-        Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
-        rb.AddForce(rebote* fuerzaRebote ,ForceMode2D.Impulse);
+        if (!recibiendoDanio)
+        {
+            recibiendoDanio = true;
+            vida -= cantDanio;
+            if (vida <= 0)
+            {
+                muerto = true;
+                if (animator != null)
+                {
+                    animator.SetBool("die", true); // Activa la animación de muerte
+                }
+            }
+            if (!muerto)
+            {
+                Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
+                rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
+            }
+        }
     }
 
     public void Stunear(float duracion)
@@ -229,8 +251,7 @@ public class PlayerController : MonoBehaviour
 
     public void DesactivaDanio()
     {
-        /* Debug.Log("se desactivo el daño");*/
-        recibiendoDanio=false;
-        rb.linearVelocityX= 0;
+        recibiendoDanio = false;
+        rb.linearVelocity = Vector2.zero;
     }
 }

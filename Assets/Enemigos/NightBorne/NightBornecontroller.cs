@@ -1,116 +1,111 @@
 using UnityEngine;
+using System.Collections;
 
 public class NightBornecontroller : MonoBehaviour
 {
     public Transform player;
     public float detectionRange = 5f;
-    public float speed = 2f;
+    public float speed = 4.5f;
+    public float fuerzaRebote = 5f;
 
     private Rigidbody2D rb;
     private Vector2 movement;
-    private Animator animator; // 1. Referencia al Animator
-
+    private bool enMovimiento;
     private bool recibiendoDanio;
-    public float fuerzaRebote = 5f; // Fuerza del rebote al recibir daño
+    private bool playerVivo = true;
+    private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // 2. Inicializar el Animator
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        if(!recibiendoDanio)
-        mover();
-
+        if (playerVivo)
+        {
+            Movimiento();
+        }
+        if (animator != null)
+            animator.SetBool("isMoving", enMovimiento);
     }
-    private void mover()
+
+    private void Movimiento()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        if (distanceToPlayer <= detectionRange)
+        if (distanceToPlayer < detectionRange)
         {
             Vector2 direction = (player.position - transform.position).normalized;
-            movement = new Vector2(direction.x, 0f);
+
+            if (direction.x < 0)
+                transform.localScale = new Vector3(-1, 1, 1);
+            if (direction.x > 0)
+                transform.localScale = new Vector3(1, 1, 1);
+
+            movement = new Vector2(direction.x, 0);
+            enMovimiento = true;
         }
         else
         {
             movement = Vector2.zero;
+            enMovimiento = false;
         }
-
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
-
-        // Voltear el sprite según la dirección del movimiento
-        if (movement.x > 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1); // Mirar a la derecha
-        }
-        else if (movement.x < 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1); // Mirar a la izquierda
-        }
-
-        if (animator != null)
-        {
-            animator.SetBool("isMoving", Mathf.Abs(movement.x) > 0.01f);
-        }
+        if (!recibiendoDanio)
+            rb.MovePosition(rb.position + movement * speed * Time.deltaTime);
     }
 
-    void OnDrawGizmosSelected()
-    {
-        // Dibuja un círculo de detección en el editor
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            Vector2 direccionDanio = new Vector2(transform.position.x, 0);
+            PlayerController playerScript = collision.gameObject.GetComponent<PlayerController>();
 
-            Vector2 direccionDanio = new Vector2(transform.position.x,0);
-            collision.gameObject.GetComponent<PlayerController>().RecibirDanio(direccionDanio, 1);
-
-            // Daño y stun
-            //PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            //if (player != null)
-            //{
-            //    player.RecibirDanio(1); // Llama a un método para recibir daño
-            //    player.Stunear(0.5f);  
-            //}
+            playerScript.RecibirDanio(direccionDanio, 1); // <-- Usa el nombre correcto del método
+            playerVivo = !playerScript.muerto;
+            if (!playerVivo)
+            {
+                enMovimiento = false;
+            }
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Espada"))
         {
-
-            Vector2 direccionDanio = new Vector2(collision.gameObject.transform.position.x,0);
-            RecibirDanio(direccionDanio, 1);
-
+            Vector2 direccionDanio = new Vector2(collision.gameObject.transform.position.x, 0);
+            RecibeDanio(direccionDanio, 1);
         }
     }
 
-    public void RecibirDanio(Vector2 direccion, int cantDanio)
+    public void RecibeDanio(Vector2 direccion, int cantDanio)
     {
-        recibiendoDanio = true;
-        if (animator != null)
+        if (!recibiendoDanio)
         {
-            animator.SetBool("isHurt", true); // Activa la animación de daño
+            recibiendoDanio = true;
+            Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
+            rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
+
+            if (animator != null)
+            {
+                animator.SetBool("isHurt", true); // Activa la animación de daño
+            }
+
+            StartCoroutine(DesactivaDanio());
         }
-        Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
-        rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
     }
 
-    public void DesactivaDanio()
+    public IEnumerator DesactivaDanio()
     {
+        yield return new WaitForSeconds(0.4f);
         recibiendoDanio = false;
-        rb.linearVelocityX = 0;
         rb.linearVelocity = Vector2.zero;
         if (animator != null)
         {
-            animator.SetBool("isHurt", false); // Desactiva la animación de daño
+            animator.SetBool("isHurt", false);
         }
     }
 }
