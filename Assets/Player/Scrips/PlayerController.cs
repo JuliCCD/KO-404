@@ -31,11 +31,14 @@ public class PlayerController : MonoBehaviour
 
     public int vida  = 3; // Vida del jugador
     public bool muerto;
+    public AudioClip sonidoMuerte;
+    private AudioSource audioSource;
 
     void Start()
     {
         // Inicializar el Rigidbody2D
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -233,6 +236,10 @@ public class PlayerController : MonoBehaviour
                 if (animator != null)
                 {
                     animator.SetBool("die", true); // Activa la animación de muerte
+                }
+                if (audioSource != null && sonidoMuerte != null)
+                {
+                    audioSource.PlayOneShot(sonidoMuerte); // Reproducir sonido de muerte
                 }
             }
             if (!muerto)
