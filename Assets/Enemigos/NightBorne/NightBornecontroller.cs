@@ -10,6 +10,9 @@ public class NightBornecontroller : MonoBehaviour
     private Vector2 movement;
     private Animator animator; // 1. Referencia al Animator
 
+    private bool recibiendoDanio;
+    public float fuerzaRebote = 5f; // Fuerza del rebote al recibir daño
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -17,6 +20,12 @@ public class NightBornecontroller : MonoBehaviour
     }
 
     void Update()
+    {
+        if(!recibiendoDanio)
+        mover();
+
+    }
+    private void mover()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
@@ -59,13 +68,6 @@ public class NightBornecontroller : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            //// Rebote
-            //Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-            //if (playerRb != null)
-            //{
-            //    Vector2 reboundDirection = (collision.transform.position - transform.position).normalized;
-            //    playerRb.AddForce(reboundDirection * 5f, ForceMode2D.Impulse); // Ajusta la fuerza a tu gusto
-            //}
 
             Vector2 direccionDanio = new Vector2(transform.position.x,0);
             collision.gameObject.GetComponent<PlayerController>().RecibirDanio(direccionDanio, 1);
@@ -77,6 +79,38 @@ public class NightBornecontroller : MonoBehaviour
             //    player.RecibirDanio(1); // Llama a un método para recibir daño
             //    player.Stunear(0.5f);  
             //}
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Espada"))
+        {
+
+            Vector2 direccionDanio = new Vector2(collision.gameObject.transform.position.x,0);
+            RecibirDanio(direccionDanio, 1);
+
+        }
+    }
+
+    public void RecibirDanio(Vector2 direccion, int cantDanio)
+    {
+        recibiendoDanio = true;
+        if (animator != null)
+        {
+            animator.SetBool("isHurt", true); // Activa la animación de daño
+        }
+        Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
+        rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
+    }
+
+    public void DesactivaDanio()
+    {
+        recibiendoDanio = false;
+        rb.linearVelocityX = 0;
+        rb.linearVelocity = Vector2.zero;
+        if (animator != null)
+        {
+            animator.SetBool("isHurt", false); // Desactiva la animación de daño
         }
     }
 }

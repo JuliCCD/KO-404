@@ -23,11 +23,13 @@ public class PlayerController : MonoBehaviour
     private float attackCooldown = 0.5f; // Tiempo de cooldown en segundos
     private float lastAttackTime = -Mathf.Infinity; // Último tiempo de ataque
     private float attackDuration = 0.6f; // Duración de la animación de ataque
+
     private float attackTimer = 0f;
     private bool attackKeyReleased = true;
     private bool isStunned = false;
     private float stunTimer = 0f;
 
+    public int vida  = 3; // Vida del jugador
     void Start()
     {
         // Inicializar el Rigidbody2D
@@ -81,12 +83,6 @@ public class PlayerController : MonoBehaviour
             return; // Si está stuneado, no puede moverse ni atacar
         }
 
-        //Vector3 posicion= transform.position;
-        //if (!recibiendoDanio)
-        //    transform.position = new Vector3(posicion.x + velocidad * Time.deltaTime, posicion.y, posicion.z);
-
-
-        // Actualizar las animaciones
         ActualizarAnimaciones();
         
     }
@@ -177,7 +173,7 @@ public class PlayerController : MonoBehaviour
         if (!isAttacking && Time.time >= lastAttackTime + attackCooldown)
         {
             isAttacking = true;
-            attackTimer = 0f; // Reinicia el temporizador de ataque
+            attackTimer = 0f; 
             lastAttackTime = Time.time;
 
         }
@@ -229,12 +225,11 @@ public class PlayerController : MonoBehaviour
     {
         isStunned = true;
         stunTimer = duracion;
-        // Aquí puedes activar animación de stun, etc.
     }
 
     public void DesactivaDanio()
     {
-        Debug.Log("se desactivo el daño");
+        /* Debug.Log("se desactivo el daño");*/
         recibiendoDanio=false;
         rb.linearVelocityX= 0;
     }
