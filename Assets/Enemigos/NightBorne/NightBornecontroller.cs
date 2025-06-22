@@ -8,12 +8,12 @@ public class NightBornecontroller : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
-    private Animator animator; // 1. Referencia al Animator
+    private Animator animator; 
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // 2. Inicializar el Animator
+        animator = GetComponent<Animator>(); 
     }
 
     void Update()
