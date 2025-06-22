@@ -8,12 +8,12 @@ public class NightBornecontroller : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
-    private Animator animator; 
+    private Animator animator; // 1. Referencia al Animator
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); 
+        animator = GetComponent<Animator>(); // 2. Inicializar el Animator
     }
 
     void Update()
@@ -59,21 +59,24 @@ public class NightBornecontroller : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Rebote
-            Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-            if (playerRb != null)
-            {
-                Vector2 reboundDirection = (collision.transform.position - transform.position).normalized;
-                playerRb.AddForce(reboundDirection * 5f, ForceMode2D.Impulse); // Ajusta la fuerza a tu gusto
-            }
+            //// Rebote
+            //Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
+            //if (playerRb != null)
+            //{
+            //    Vector2 reboundDirection = (collision.transform.position - transform.position).normalized;
+            //    playerRb.AddForce(reboundDirection * 5f, ForceMode2D.Impulse); // Ajusta la fuerza a tu gusto
+            //}
+
+            Vector2 direccionDanio = new Vector2(transform.position.x,0);
+            collision.gameObject.GetComponent<PlayerController>().RecibirDanio(direccionDanio, 1);
 
             // Daño y stun
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            if (player != null)
-            {
-                player.RecibirDanio(1); // Llama a un método para recibir daño
-                player.Stunear(0.5f);  
-            }
+            //PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            //if (player != null)
+            //{
+            //    player.RecibirDanio(1); // Llama a un método para recibir daño
+            //    player.Stunear(0.5f);  
+            //}
         }
     }
 }

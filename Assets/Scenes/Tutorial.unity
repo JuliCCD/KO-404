@@ -44205,6 +44205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocidad: 5.5
   fuerzaSalto: 8
+  fuerzaRebote: 6
   longitudRaycast: 0.9
   dashVelocidad: 12.5
   dashDuracion: 0.2
