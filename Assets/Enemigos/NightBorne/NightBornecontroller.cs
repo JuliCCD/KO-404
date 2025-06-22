@@ -14,6 +14,8 @@ public class NightBornecontroller : MonoBehaviour
     private bool recibiendoDanio;
     private bool playerVivo = true;
     private Animator animator;
+    public int vida = 3;
+    private bool muerto = false;
 
     void Start()
     {
@@ -23,6 +25,8 @@ public class NightBornecontroller : MonoBehaviour
 
     void Update()
     {
+        if (muerto) return; // Detén toda la lógica si está muerto
+
         if (playerVivo)
         {
             Movimiento();
@@ -33,6 +37,8 @@ public class NightBornecontroller : MonoBehaviour
 
     private void Movimiento()
     {
+        if (muerto) return; // No moverse si está muerto
+
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
         if (distanceToPlayer < detectionRange)
@@ -58,6 +64,8 @@ public class NightBornecontroller : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (muerto) return; // No colisionar si está muerto
+
         if (collision.gameObject.CompareTag("Player"))
         {
             Vector2 direccionDanio = new Vector2(transform.position.x, 0);
@@ -74,6 +82,8 @@ public class NightBornecontroller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (muerto) return; // No recibir daño si está muerto
+
         if (collision.CompareTag("Espada"))
         {
             Vector2 direccionDanio = new Vector2(collision.gameObject.transform.position.x, 0);
@@ -83,29 +93,46 @@ public class NightBornecontroller : MonoBehaviour
 
     public void RecibeDanio(Vector2 direccion, int cantDanio)
     {
-        if (!recibiendoDanio)
+        if (!recibiendoDanio && !muerto)
         {
             recibiendoDanio = true;
-            Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
-            rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
-
-            if (animator != null)
+            vida -= cantDanio;
+            if (vida <= 0)
             {
-                animator.SetBool("isHurt", true); // Activa la animación de daño
+                muerto = true;
+                if (animator != null)
+                {
+                    animator.SetBool("die", true); 
+                }
             }
+            else
+            {
+                Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
+                rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
 
-            StartCoroutine(DesactivaDanio());
+                if (animator != null)
+                {
+                    animator.SetBool("isHurt", true); // Activa la animación de daño
+                }
+                StartCoroutine(DesactivaDanio());
+            }
         }
     }
 
     public IEnumerator DesactivaDanio()
     {
+        rb.linearVelocity = Vector2.zero; // Detén cualquier movimiento físico
+        rb.linearVelocity = Vector2.zero; // Si usas linearVelocity (por compatibilidad)
         yield return new WaitForSeconds(0.4f);
         recibiendoDanio = false;
-        rb.linearVelocity = Vector2.zero;
         if (animator != null)
         {
             animator.SetBool("isHurt", false);
         }
+    }
+
+    public void DestruirDespuesDeMorir()
+    {
+        Destroy(gameObject);
     }
 }
