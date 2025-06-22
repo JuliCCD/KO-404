@@ -102,8 +102,9 @@ public class NightBornecontroller : MonoBehaviour
                 muerto = true;
                 if (animator != null)
                 {
-                    animator.SetBool("die", true); 
+                    animator.SetBool("die", true);
                 }
+                GameManager.Instance.SumarPuntaje(1); // Suma 1 punto al morir el enemigo
             }
             else
             {

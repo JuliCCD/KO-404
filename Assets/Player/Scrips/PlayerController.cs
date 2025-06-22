@@ -36,9 +36,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // Inicializar el Rigidbody2D
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
+        // vida = 3; // Si quieres reiniciar la vida al entrar a cada escena
     }
 
     void Update()
@@ -241,6 +241,7 @@ public class PlayerController : MonoBehaviour
                 {
                     audioSource.PlayOneShot(sonidoMuerte); // Reproducir sonido de muerte
                 }
+                LlamarGameOverMenu();
             }
             if (!muerto)
             {
@@ -260,5 +261,14 @@ public class PlayerController : MonoBehaviour
     {
         recibiendoDanio = false;
         rb.linearVelocity = Vector2.zero;
+    }
+
+    public void LlamarGameOverMenu()
+    {
+        var gameOverMenu = FindFirstObjectByType<GameOverMenu>();
+        if (gameOverMenu != null)
+        {
+            gameOverMenu.MostrarGameOver();
+        }
     }
 }
