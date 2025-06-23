@@ -31,16 +31,21 @@ public class JefeFantasma : MonoBehaviour
             // Si llegó al destino, elige el otro extremo y voltea el sprite
             if (Vector3.Distance(transform.position, destino) < 0.1f)
             {
-                float nuevoX = destino.x == rangoXMin ? rangoXMax : rangoXMin;
-                destino = new Vector3(nuevoX, posY, 0);
-
                 // Voltear sprite en X según dirección
-                Vector3 escala = transform.localScale;
-                if (nuevoX < transform.position.x)
-                    escala.x = -Mathf.Abs(escala.x); // Voltea a la izquierda
+                if (destino.x == rangoXMin)
+                {
+                    destino = new Vector3(rangoXMax, posY, 0);
+                    Vector3 escala = transform.localScale;
+                    escala.x = Mathf.Abs(escala.x); // Voltea a la derecha
+                    transform.localScale = escala;
+                }
                 else
-                    escala.x = Mathf.Abs(escala.x);  // Voltea a la derecha
-                transform.localScale = escala;
+                {
+                    destino = new Vector3(rangoXMin, posY, 0);
+                    Vector3 escala = transform.localScale;
+                    escala.x = -Mathf.Abs(escala.x); // Voltea a la izquierda
+                    transform.localScale = escala;
+                }
             }
         }
     }
