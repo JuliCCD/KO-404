@@ -17,6 +17,10 @@ public class NightBornecontroller : MonoBehaviour
     public int vida = 3;
     private bool muerto = false;
 
+    public GameObject monedaPrefab; // Prefab de la moneda
+    public int minMonedas = 1;
+    public int maxMonedas = 5;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -100,6 +104,13 @@ public class NightBornecontroller : MonoBehaviour
             if (vida <= 0)
             {
                 muerto = true;
+                // Instanciar monedas al morir
+                int cantidad = Random.Range(minMonedas, maxMonedas + 1);
+                for (int i = 0; i < cantidad; i++)
+                {
+                    Vector3 offset = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(0.2f, 0.8f), 0);
+                    Instantiate(monedaPrefab, transform.position + offset, Quaternion.identity);
+                }
                 if (animator != null)
                 {
                     animator.SetBool("die", true);

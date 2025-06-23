@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public int puntaje = 0;
+    public int monedas = 0;
 
     void Awake()
     {
@@ -22,5 +23,11 @@ public class GameManager : MonoBehaviour
     {
         puntaje += cantidad;
         Debug.Log("Puntaje: " + puntaje);
+    }
+
+    public void SumarMoneda(int cantidad)
+    {
+        monedas += cantidad;
+        // Aquí puedes actualizar el UI si tienes uno
     }
 }
