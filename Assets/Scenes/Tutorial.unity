@@ -137,7 +137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &107402392
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45305,7 +45305,12 @@ MonoBehaviour:
   animator: {fileID: 1290964819}
   vida: 1
   muerto: 0
+  sonidoSalto: {fileID: 8300000, guid: 3c4cea6377253c5458850639a4f923f3, type: 3}
+  sonidoAtaque: {fileID: 8300000, guid: 59edee44876e2ca409b037e3110a27c4, type: 3}
+  sonidoDash: {fileID: 8300000, guid: 6587b3049bc9be24181fededcd4852c4, type: 3}
+  sonidoDanio: {fileID: 8300000, guid: 64dbf616f4d04214caeae9fed49bd724, type: 3}
   sonidoMuerte: {fileID: 8300000, guid: 3488687ac841cfe46b208acf69944d78, type: 3}
+  sonidoCaminar: {fileID: 8300000, guid: e4e4ee65e1f1db24c926d011670bf90a, type: 3}
 --- !u!50 &1290964823
 Rigidbody2D:
   serializedVersion: 5
@@ -45392,7 +45397,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -45984,6 +45989,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1668954926}
+  - component: {fileID: 1668954927}
   m_Layer: 0
   m_Name: GameOver
   m_TagString: Untagged
@@ -46007,6 +46013,19 @@ Transform:
   - {fileID: 2109887019}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1668954927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668954924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47908cbe15247464a8a3fb5b183b97a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelGameOver: {fileID: 107402391}
 --- !u!1 &1789221399
 GameObject:
   m_ObjectHideFlags: 0

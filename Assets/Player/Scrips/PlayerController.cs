@@ -31,18 +31,46 @@ public class PlayerController : MonoBehaviour
 
     public int vida  = 3; // Vida del jugador
     public bool muerto;
-    public AudioClip sonidoMuerte;
+    public AudioClip sonidoSalto;
+    public AudioClip sonidoAtaque;
+    public AudioClip sonidoDash;
+    public AudioClip sonidoDanio;
+    public AudioClip sonidoMuerte; 
+    public AudioClip sonidoCaminar;
     private AudioSource audioSource;
+    private AudioSource audioSourceCaminar; // Canal exclusivo para caminar
+    private AudioSource audioSourceDie;     // Canal exclusivo para muerte
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
-        // vida = 3; // Si quieres reiniciar la vida al entrar a cada escena
+
+        audioSourceCaminar = gameObject.AddComponent<AudioSource>();
+        audioSourceCaminar.playOnAwake = false;
+        audioSourceCaminar.loop = true;
+        audioSourceCaminar.volume = 1f;
+
+        audioSourceDie = gameObject.AddComponent<AudioSource>();
+        audioSourceDie.playOnAwake = false;
+        audioSourceDie.loop = false;
+
+        // PRUEBA: fuerza el sonido de caminar al iniciar
+        if (sonidoCaminar != null)
+        {
+            audioSourceCaminar.clip = sonidoCaminar;
+            audioSourceCaminar.Play();
+        }
     }
 
     void Update()
     {
+        // Si el jugador está muerto, detener el sonido de caminar si está sonando
+        if (muerto && audioSourceCaminar.isPlaying)
+        {
+            audioSourceCaminar.Stop();
+        }
+
         // Verificar si el jugador está muerto
         if (!muerto)
         {
@@ -99,21 +127,31 @@ public class PlayerController : MonoBehaviour
 
     private void MoverJugador()
     {
-        // Manejar el movimiento horizontal del jugador
         float velocidadX = Input.GetAxis("Horizontal") * velocidad * Time.deltaTime;
 
-        // Cambiar la dirección del sprite según el movimiento
         if (velocidadX < 0)
-        {
             transform.localScale = new Vector3(-1, 1, 1);
-        }
         if (velocidadX > 0)
-        {
             transform.localScale = new Vector3(1, 1, 1);
-        }
 
-        // Actualizar la posición del jugador
         transform.position += new Vector3(velocidadX, 0, 0);
+
+        // Sonido de caminar SOLO en su canal
+        if (Mathf.Abs(velocidadX) > 0.01f && enSuelo && !isDashing && !isAttacking)
+        {
+            if (!audioSourceCaminar.isPlaying)
+            {
+                audioSourceCaminar.clip = sonidoCaminar;
+                audioSourceCaminar.Play();
+            }
+        }
+        else
+        {
+            if (audioSourceCaminar.isPlaying)
+            {
+                audioSourceCaminar.Stop();
+            }
+        }
     }
 
     private void VerificarSuelo()
@@ -141,6 +179,7 @@ public class PlayerController : MonoBehaviour
         if (enSuelo && Input.GetKeyDown(KeyCode.Space)/*&& !recibiendoDanio*/)
         {
             rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
+            audioSource.PlayOneShot(sonidoSalto); // Reproducir sonido de salto
         }
     }
 
@@ -162,6 +201,7 @@ public class PlayerController : MonoBehaviour
             // Aplicar velocidad de dash en la dirección actual
             float dashDirection = transform.localScale.x; // Dirección basada en la escala del jugador
             rb.linearVelocity = new Vector2(dashDirection * dashVelocidad, rb.linearVelocity.y);
+            audioSource.PlayOneShot(sonidoDash); // Reproducir sonido de dash
         }
 
         if (isDashing)
@@ -185,7 +225,7 @@ public class PlayerController : MonoBehaviour
             isAttacking = true;
             attackTimer = 0f; 
             lastAttackTime = Time.time;
-
+            audioSource.PlayOneShot(sonidoAtaque); // Reproducir sonido de ataque
         }
     }
     
@@ -233,20 +273,25 @@ public class PlayerController : MonoBehaviour
             if (vida <= 0)
             {
                 muerto = true;
-                if (animator != null)
+                animator.SetBool("die", true); 
+                if (audioSourceCaminar.isPlaying)
                 {
-                    animator.SetBool("die", true); // Activa la animación de muerte
+                    audioSourceCaminar.Stop(); // Detener sonido de caminar al morir
                 }
-                if (audioSource != null && sonidoMuerte != null)
+            
+                if (audioSourceDie != null && sonidoMuerte != null)
                 {
-                    audioSource.PlayOneShot(sonidoMuerte); // Reproducir sonido de muerte
+                    audioSourceDie.clip = sonidoMuerte;
+                    audioSourceDie.Play(); // Reproducir sonido de muerte en su canal
+                    LlamarGameOverMenu();
                 }
-                LlamarGameOverMenu();
+                
             }
             if (!muerto)
             {
                 Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
                 rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
+                audioSource.PlayOneShot(sonidoDanio); // Reproducir sonido de daño
             }
         }
     }
