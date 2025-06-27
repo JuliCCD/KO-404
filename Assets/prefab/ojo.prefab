@@ -200,6 +200,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xMin: -27.84
   xMax: 27.84
-  velocidad: 4
+  velocidad: 8
   velocidadExtra: 2
   jefe: {fileID: 0}
