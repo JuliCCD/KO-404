@@ -322,7 +322,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      crow_death2_0: 1700338141727255324
+      crow_death2_1: -2134699542877436906
+      crow_death2_2: 7658377367740237732
+      crow_death2_3: -711742476817850151
+      crow_death2_4: 8067352750364771196
+      crow_death2_5: 8928390750008816313
+      crow_death2_6: 1013314489948788
+      crow_death2_7: -2265726251795591215
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

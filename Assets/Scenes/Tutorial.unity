@@ -47043,7 +47043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1290964821}
   detectionRange: 5.5
-  speed: 25
+  speed: 20
   fuerzaRebote: 4
   vida: 3
   monedaPrefab: {fileID: 2375866536704821789, guid: 8ea21f98e4b25a747be8644d28c0923e, type: 3}
