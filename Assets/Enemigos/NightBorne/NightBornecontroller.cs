@@ -134,7 +134,6 @@ public class NightBornecontroller : MonoBehaviour
     public IEnumerator DesactivaDanio()
     {
         rb.linearVelocity = Vector2.zero; // Detén cualquier movimiento físico
-        rb.linearVelocity = Vector2.zero; // Si usas linearVelocity (por compatibilidad)
         yield return new WaitForSeconds(0.4f);
         recibiendoDanio = false;
         if (animator != null)
