@@ -272,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      crow_jump_0: 3112916690700715366
+      crow_jump_1: -8268231044195119684
+      crow_jump_2: -1313590801716814441
+      crow_jump_3: -6620370737958693450
+      crow_jump_4: -4156165174093553923
+      crow_jump_5: -2106292963089343192
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

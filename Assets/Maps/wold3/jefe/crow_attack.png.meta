@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      crow_attack_0: 5828097881820591796
+      crow_attack_1: -2215011247817263366
+      crow_attack_2: 1838692987578322715
+      crow_attack_3: -2555522892024411821
+      crow_attack_4: -5989287086039537353
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

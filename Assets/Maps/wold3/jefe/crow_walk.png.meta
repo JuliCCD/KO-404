@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      crow_walk_0: -3493500996407132599
+      crow_walk_1: -622415874551597635
+      crow_walk_2: -2348605418885848549
+      crow_walk_3: -3408447361730978909
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
